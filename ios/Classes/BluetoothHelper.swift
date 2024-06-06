@@ -37,9 +37,7 @@ class BluetoothAdvertisementHelper: NSObject, CBPeripheralManagerDelegate {
     func startAdvertising(orderId: String, boxAuth: String) {
         let advertisementData = [
             CBAdvertisementDataLocalNameKey: encode(orderId: orderId, boxAuth: boxAuth),
-            CBAdvertisementDataServiceUUIDsKey: [CBUUID(nsuuid: UUID())],
-            CBAdvertisementDataManufacturerDataKey: NSData(data: encode(orderId: orderId, boxAuth: boxAuth).data(using: .utf8)!),
-            "hello": "World"
+            CBAdvertisementDataServiceUUIDsKey: [CBUUID(nsuuid: UUID(uuidString: "E469543B-B177-4C5A-9395-84686B18758A")!)],
         ] as [String : Any]
         peripheralManager?.startAdvertising(advertisementData)
         print("Started advertising: \(String(describing: advertisementData))")

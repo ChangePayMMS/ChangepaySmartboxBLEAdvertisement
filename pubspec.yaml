@@ -1,7 +1,7 @@
 name: ble_advertisement
 description: "A new Flutter plugin project."
 version: 0.0.1
-homepage:
+homepage: https://pub.dev
 
 environment:
   sdk: '>=3.3.0 <4.0.0'
