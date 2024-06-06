@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
@@ -11,10 +13,12 @@ class MethodChannelBleAdvertisement extends BleAdvertisementPlatform {
 
   @override
   Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
+    final version =
+        await methodChannel.invokeMethod<String>('getPlatformVersion');
     return version;
   }
-    @override
+
+  @override
   Future<String?> startAdvertisement(String orderId, String boxAuth) async {
     String result;
     try {

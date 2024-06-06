@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -22,7 +24,7 @@ class _MyAppState extends State<MyApp> {
 
   late final TextEditingController orderIdTextFieldController;
   late final TextEditingController boxAuthTextFieldController;
-
+  bool isAdvertising = false;
   @override
   void initState() {
     handlePermission();
@@ -33,6 +35,7 @@ class _MyAppState extends State<MyApp> {
 
   void handlePermission() {
     Permission.bluetoothAdvertise.request();
+    Permission.bluetooth.request();
   }
 
   @override
@@ -48,14 +51,25 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
+          onPressed: () async {
+            var started = await _bleAdvertisementPlugin.isAdvertising ?? false;
             handlePermission();
-            _bleAdvertisementPlugin.startAdvertisement(
-              orderIdTextFieldController.text,
-              boxAuthTextFieldController.text,
+            if (started) {
+              await _bleAdvertisementPlugin.stopAdvertisement();
+            } else {
+              await _bleAdvertisementPlugin.startAdvertisement(
+                orderIdTextFieldController.text,
+                boxAuthTextFieldController.text,
+              );
+            }
+            started = await _bleAdvertisementPlugin.isAdvertising ?? false;
+            setState(
+              () {
+                isAdvertising = started;
+              },
             );
           },
-          child: const Icon(CupertinoIcons.bluetooth),
+          child: Icon(isAdvertising ? Icons.circle : CupertinoIcons.bluetooth),
         ),
         appBar: AppBar(
           title: const Text('Bluetooth Advertisement plugin'),
