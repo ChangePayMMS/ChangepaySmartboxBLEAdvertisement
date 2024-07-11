@@ -35,30 +35,23 @@ class BluetoothAdvertisementHelper: NSObject, CBPeripheralManagerDelegate {
     }
 
     func startAdvertising(orderId: String, boxAuth: String) {
-        let boxAuthUUID = UUID()
-        let orderIdUUID = UUID()
-        let serviceUUID = UUID()
-        print("Box UUID: \(boxAuthUUID)")
-        print("orderId UUID: \(orderIdUUID)")
-        print("Service UUID: \(serviceUUID)")
-        let c1 = CBMutableCharacteristic(
-            type: CBUUID(nsuuid: orderIdUUID),
+        guard let serviceUUID = UUID(uuidString: "0BC42DB3-B4B0-413A-82B7-44012F720AFE") else {
+            return
+        }
+
+        let payloadCharacterstic = CBMutableCharacteristic(
+            type: CBUUID(nsuuid: UUID()),
             properties: [.read],
-            value: orderId.data(using: .utf8),
-            permissions: .readable
-        )
-        let c2 = CBMutableCharacteristic(
-            type: CBUUID(nsuuid: boxAuthUUID),
-            properties: [.read],
-            value: boxAuth.data(using: .utf8),
+            value: "\(orderId);\(boxAuth)".data(using: .utf8),
             permissions: .readable
         )
         
         let advService = CBMutableService(type: CBUUID(nsuuid: serviceUUID), primary: true)
-        advService.characteristics = [c1, c2]
+        advService.characteristics = [payloadCharacterstic]
         peripheralManager?.add(advService)
+        
         let advertisementData = [
-            CBAdvertisementDataLocalNameKey: "iOS-Device-BLE-Smartbox-Req",
+            CBAdvertisementDataLocalNameKey: "iOS-Device-BLE-Smartbox-Adv",
         ] as [String : Any]
         
         peripheralManager?.startAdvertising(advertisementData)
